@@ -117,9 +117,7 @@ def _get_local_configuration(
 def _create_watchman_configuration() -> None:
     watchman_configuration_path = os.path.abspath(".watchmanconfig")
     watchman_path = shutil.which("watchman")
-    if watchman_path is not None and log.get_yes_no_input(
-        "Also initialize watchman in the current directory?"
-    ):
+    if watchman_path is not None:
         try:
             if not os.path.isfile(watchman_configuration_path):
                 with open(watchman_configuration_path, "w+") as configuration_file:
@@ -168,7 +166,8 @@ def _get_configuration(
     typeshed: Optional[Path] = find_typeshed()
     if typeshed is None:
         typeshed = Path(
-            log.get_input("Unable to locate typeshed, please enter its root: ")
+            # log.get_input("Unable to locate typeshed, please enter its root: ")
+            "/pyre-check/stubs/typeshed/typeshed-master"
         ).resolve()
         if not typeshed.is_dir():
             raise InitializationException(
@@ -188,9 +187,11 @@ def _get_configuration(
             ).resolve()
         configuration["taint_models_path"] = str(taint_models_path)
 
-    source_directory_input = log.get_optional_input(
-        "Which directory(ies) should pyre analyze?", "."
-    )
+    # source_directory_input = log.get_optional_input(
+    #     "Which directory(ies) should pyre analyze?", "."
+    # )
+    source_directory_input = "."
+
     source_directory_paths = [
         directory.strip() for directory in source_directory_input.split(",")
     ]
